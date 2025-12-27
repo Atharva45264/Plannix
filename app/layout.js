@@ -2,6 +2,8 @@ import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 import Header from "@/components/header";
 import { ConvexClientProvider } from "./ConvexClientProvider";
+import { ClerkProvider } from "@clerk/nextjs";
+import { dark } from "@clerk/themes";
 
 
 export const metadata = {
@@ -22,7 +24,11 @@ export default function RootLayout({ children }) {
             enableSystem
             disableTransitionOnChange
           >
-
+        <ClerkProvider 
+        appearance={{
+          theme: dark,
+        }}
+        >
         <ConvexClientProvider>
         {/* Header */}
         <Header/>
@@ -41,6 +47,7 @@ export default function RootLayout({ children }) {
         </footer>
         </main>
         </ConvexClientProvider>
+        </ClerkProvider>
         </ThemeProvider>
       </body>
     </html>
