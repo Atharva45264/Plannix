@@ -1,12 +1,13 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { SignInButton } from "@clerk/nextjs";
-import { SignedOut } from "@clerk/nextjs";
-import { SignUpButton } from "@clerk/nextjs";
-import { SignedIn } from "@clerk/nextjs";
 import { UserButton } from "@clerk/nextjs";
 import { Button } from "./ui/button";
+import { Authenticated, Unauthenticated } from "convex/react";
+import {BarLoader} from "react-spinners";
 
 const Header = () => {
   return (
@@ -28,19 +29,24 @@ const Header = () => {
 
           {/* Right side actions */}
           <div className="flex items-center">
-            <SignedIn>
+            <Authenticated>
               {/* Create Events  */}
               <UserButton />
-            </SignedIn>
-            <SignedOut>
+            </Authenticated>
+            <Unauthenticated>
               <SignInButton>
                 <Button size="sm">Sign in</Button>
               </SignInButton>
-            </SignedOut>
+            </Unauthenticated>
           </div>
         </div>
 
         {/* Mobile serch location - below navbar  */}
+
+        {/* Loader  */}
+        <div className="absolute bottom-0 left-0 w-full">
+          <BarLoader width={"100%"} color="#a855f7"/> 
+        </div>
       </nav>
 
       {/* Modals  */}
