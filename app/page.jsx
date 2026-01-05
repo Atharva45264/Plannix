@@ -33,7 +33,7 @@ export default function Home() {
         {/* right */}
         <div>
           <Image
-          src="/public/hero.gif"
+          src="/hero.gif"
           alt="react meetup rock concert"
           width={700}
           height={700}
