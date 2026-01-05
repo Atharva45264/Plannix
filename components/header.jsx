@@ -16,7 +16,7 @@ import { Building } from "lucide-react";
 const Header = () => {
   const {isLoading} = useStoreUser();
 
-  const [showUpgradeModal, setShowUpgradeModal] = useState();
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
   return (
     <>
@@ -37,7 +37,9 @@ const Header = () => {
 
           {/* Right side actions */}
           <div className="flex items-center">
-              <Button variant={"ghost"} size="sm" onClick={setShowUpgradeModal}>
+              <Button variant={"ghost"} size="sm" 
+              onClick={()=> setShowUpgradeModal(true)}
+              >
                 Pricing
               </Button>
               <Button variant={"ghost"} size="sm" asChild className={"mr-2"}>
