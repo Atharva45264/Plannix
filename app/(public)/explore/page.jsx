@@ -1,28 +1,37 @@
 "use client";
 
-import { api } from "@/convex/_generated/api";
-import { useConvexQuery } from "@/hooks/use-convex-query";
-import {Carousel,CarouselContent,CarouselItem,CarouselNext,CarouselPrevious} from "@/components/ui/carousel";
-import Autoplay from "embla-carousel-autoplay";
+import { useRef } from "react";
+import { useRouter } from "next/navigation";
 import { Calendar, MapPin, Users, ArrowRight, Loader2 } from "lucide-react";
 import { format } from "date-fns";
+import { useConvexQuery } from "@/hooks/use-convex-query";
+import { api } from "@/convex/_generated/api";
+import { createLocationSlug } from "@/lib/location-utils";
 import Image from "next/image";
+
 import { Badge } from "@/components/ui/badge";
-import { CATEGORIES } from "@/lib/data";
 import { Button } from "@/components/ui/button";
-import EventCard from "@/components/event-card";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import { CATEGORIES } from "@/lib/data";
+import Autoplay from "embla-carousel-autoplay";
+import EventCard from "@/components/event-card";
 
-import React, { useRef } from "react";
-import { useRouter } from "next/navigation";
+export default function ExplorePage() {
+  const router = useRouter();
+  const plugin = useRef(Autoplay({ delay: 2000, stopOnInteraction: true }));
 
-const ExplorePage = () => {
   // Fetch current user for location
   const { data: currentUser } = useConvexQuery(api.users.getCurrentUser);
-  const plugin = useRef(Autoplay({delay: 5000, stopOnInteraction: true}));
-  const router = useRouter();
 
-  const { data: featuredEvents, isLoading: LoadingFeatured } = useConvexQuery(
+  // Fetch events
+  const { data: featuredEvents, isLoading: loadingFeatured } = useConvexQuery(
     api.explore.getFeaturedEvents,
     { limit: 3 }
   );
@@ -30,8 +39,8 @@ const ExplorePage = () => {
   const { data: localEvents, isLoading: loadingLocal } = useConvexQuery(
     api.explore.getEventsByLocation,
     {
-      city: currentUser?.location?.city || "Mumbai",
-      state: currentUser?.location?.state || "Maharashtra",
+      city: currentUser?.location?.city || "Gurugram",
+      state: currentUser?.location?.state || "Haryana",
       limit: 4,
     }
   );
@@ -47,11 +56,15 @@ const ExplorePage = () => {
 
   const handleEventClick = (slug) => {
     router.push(`/events/${slug}`);
-  }
+  };
+
+  const handleCategoryClick = (categoryId) => {
+    router.push(`/explore/${categoryId}`);
+  };
 
   const handleViewLocalEvents = () => {
-    const city = currentUser?.location?.city || "Mumbai";
-    const state = currentUser?.location?.state || "Maharashtra";
+    const city = currentUser?.location?.city || "Gurugram";
+    const state = currentUser?.location?.state || "Haryana";
     const slug = createLocationSlug(city, state);
     router.push(`/explore/${slug}`);
   };
@@ -73,7 +86,7 @@ const ExplorePage = () => {
     );
   }
 
-  return(
+  return (
     <>
       {/* Hero Title */}
       <div className="pb-12 text-center">
@@ -153,8 +166,9 @@ const ExplorePage = () => {
           </Carousel>
         </div>
       )}
-      {/* Local Events  */}
-            {localEvents && localEvents.length > 0 && (
+
+      {/* Local Events */}
+      {localEvents && localEvents.length > 0 && (
         <div className="mb-16">
           <div className="flex items-center justify-between mb-6">
             <div>
@@ -184,8 +198,8 @@ const ExplorePage = () => {
           </div>
         </div>
       )}
-      {/* Browse by category */}
 
+      {/* Browse by Category */}
       <div className="mb-16">
         <h2 className="text-3xl font-bold mb-6">Browse by Category</h2>
 
@@ -212,7 +226,7 @@ const ExplorePage = () => {
         </div>
       </div>
 
-      {/* Popular events */}
+      {/* Popular Events Across Country */}
       {popularEvents && popularEvents.length > 0 && (
         <div className="mb-16">
           <div className="mb-6">
@@ -233,7 +247,7 @@ const ExplorePage = () => {
         </div>
       )}
 
-      {/* Empty state */}
+      {/* Empty State */}
       {!loadingFeatured &&
         !loadingLocal &&
         !loadingPopular &&
@@ -255,6 +269,4 @@ const ExplorePage = () => {
         )}
     </>
   );
-};
-
-export default ExplorePage;
+}

@@ -2,28 +2,26 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
-import { SignInButton } from "@clerk/nextjs";
-import { UserButton } from "@clerk/nextjs";
+import React, { useEffect, useState } from "react";
+import { SignInButton, UserButton } from "@clerk/nextjs";
 import { Button } from "./ui/button";
 import { Authenticated, Unauthenticated } from "convex/react";
-import {BarLoader} from "react-spinners";
+import { BarLoader } from "react-spinners";
 import { useStoreUser } from "@/hooks/use-store-user";
-import { Plus } from "lucide-react";
-import { Ticket } from "lucide-react";
-import { Building } from "lucide-react";
+import { Plus, Ticket, Building } from "lucide-react";
 
 const Header = () => {
-  const {isLoading} = useStoreUser();
-
+  const { isLoading } = useStoreUser();
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const mounted = typeof window !== "undefined";
+
 
   return (
     <>
       <nav className="fixed top-0 left-0 right-0 bg-background/80 backdrop-blur-xl z-20 border-b">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           {/* Logo */}
-          <Link href={"/"} className="flex items-center">
+          <Link href="/" className="flex items-center">
             <Image
               src="/logo3.png"
               alt="Plannix logo"
@@ -33,62 +31,63 @@ const Header = () => {
               priority
             />
           </Link>
-          {/* Search and Location */}
 
-          {/* Right side actions */}
           <div className="flex items-center">
-              <Button variant={"ghost"} size="sm" 
-              onClick={()=> setShowUpgradeModal(true)}
-              >
-                Pricing
-              </Button>
-              <Button variant={"ghost"} size="sm" asChild className={"mr-2"}>
-                <Link href="explore">Explore</Link>
-              </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowUpgradeModal(true)}
+            >
+              Pricing
+            </Button>
 
-            <Authenticated>
-              <Button size="sm" asChild className="flex gap-2 mr-4">
-                <Link href="/create-event">
-                  <Plus className="w-4 h-4"/>
-                  <span className="hidden sm:inline">Create Event</span>
-                </Link>
-              </Button>
+            <Button variant="ghost" size="sm" asChild className="mr-2">
+              <Link href="/explore">Explore</Link>
+            </Button>
 
-              <UserButton>
-                <UserButton.MenuItems>
-                  <UserButton.Link
-                  label="My Tickets"
-                  labelIcon={<Ticket size={16}/>}
-                  href="/my-tickets"
-                  />
-                  <UserButton.Link
-                  label="My Events"
-                  labelIcon={<Building size={16}/>}
-                  href="/my-events"
-                  />
-                  <UserButton.Action label="manageAccount" />
-                </UserButton.MenuItems>
-              </UserButton>
-            </Authenticated>
-            <Unauthenticated>
-              <SignInButton>
-                <Button size="sm">Sign in</Button>
-              </SignInButton>
-            </Unauthenticated>
+            {mounted && (
+              <>
+                <Authenticated>
+                  <Button size="sm" asChild className="flex gap-2 mr-4">
+                    <Link href="/create-event">
+                      <Plus className="w-4 h-4" />
+                      <span className="hidden sm:inline">Create Event</span>
+                    </Link>
+                  </Button>
+
+                  <UserButton>
+                    <UserButton.MenuItems>
+                      <UserButton.Link
+                        label="My Tickets"
+                        labelIcon={<Ticket size={16} />}
+                        href="/my-tickets"
+                      />
+                      <UserButton.Link
+                        label="My Events"
+                        labelIcon={<Building size={16} />}
+                        href="/my-events"
+                      />
+                      <UserButton.Action label="manageAccount" />
+                    </UserButton.MenuItems>
+                  </UserButton>
+                </Authenticated>
+
+                <Unauthenticated>
+                  <SignInButton mode="modal" asChild>
+                    <Button size="sm">Sign in</Button>
+                  </SignInButton>
+                </Unauthenticated>
+              </>
+            )}
           </div>
         </div>
 
-        {/* Mobile serch location - below navbar  */}
-
-        {/* Loader  */}
-        {isLoading &&(
+        {isLoading && (
           <div className="absolute bottom-0 left-0 w-full">
-          <BarLoader width={"100%"} color="#a855f7"/> 
-        </div>
-      )}
+            <BarLoader width="100%" color="#a855f7" />
+          </div>
+        )}
       </nav>
-
-      {/* Modals  */}
     </>
   );
 };
