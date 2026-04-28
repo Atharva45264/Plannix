@@ -33,7 +33,7 @@ export default function ExplorePage() {
   // Fetch events
   const { data: featuredEvents, isLoading: loadingFeatured } = useConvexQuery(
     api.explore.getFeaturedEvents,
-    { limit: 3 }
+    { limit: 3 },
   );
 
   const { data: localEvents, isLoading: loadingLocal } = useConvexQuery(
@@ -42,16 +42,16 @@ export default function ExplorePage() {
       city: currentUser?.location?.city || "Gurugram",
       state: currentUser?.location?.state || "Haryana",
       limit: 4,
-    }
+    },
   );
 
   const { data: popularEvents, isLoading: loadingPopular } = useConvexQuery(
     api.explore.getPopularEvents,
-    { limit: 6 }
+    { limit: 6 },
   );
 
   const { data: categoryCounts } = useConvexQuery(
-    api.explore.getCategoryCounts
+    api.explore.getCategoryCounts,
   );
 
   const handleEventClick = (slug) => {
@@ -229,9 +229,21 @@ export default function ExplorePage() {
       {/* Popular Events Across Country */}
       {popularEvents && popularEvents.length > 0 && (
         <div className="mb-16">
-          <div className="mb-6">
-            <h2 className="text-3xl font-bold mb-1">Popular Across India</h2>
-            <p className="text-muted-foreground">Trending events nationwide</p>
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-3xl font-bold mb-1">Popular Across India</h2>
+              <p className="text-muted-foreground">
+                Trending events nationwide
+              </p>
+            </div>
+
+            <Button
+              variant="outline"
+              className="gap-2"
+              onClick={() => router.push("/explore")}
+            >
+              View All <ArrowRight className="w-4 h-4" />
+            </Button>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
